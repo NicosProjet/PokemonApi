@@ -1,23 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from "react";
+import axios from "axios";
+import SearchBar from "./components/SearchBar";
+import PokemonInfo from "./components/PokemonInfo";
 import './App.css';
-import { DetailsPokemon } from './components/DetailsPokemon';
-import { PokeSearch } from './components/PokeSearch';
+import { Pokemon } from "./Models/Pokemon";
 
 
 function App() {
+  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+
+  const searchPokemon = async (pokemonName: string) => {
+    const response = await axios.get(
+      `https://pokebuildapi.fr/api/v1/pokemon/${pokemonName}`
+    );
+    setPokemon(response.data);
+    console.log(pokemon)
+  };
+
   return (
-    <main className='main'>
-
-      <div className='Pokedex'>
-        <h1>POKEDEX</h1>
-        <div className='Components'>
-          <DetailsPokemon />
-          <PokeSearch />
-
-        </div>
-      </div>
-    </main>
+    <div className="pokedex">
+      <h1>Pokedex</h1>
+      <SearchBar onSearch={searchPokemon} />
+      {pokemon && (
+        <PokemonInfo pokemon={pokemon}/>
+      )}
+    </div>
   );
 }
 
